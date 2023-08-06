@@ -38,7 +38,40 @@ class Reservation {
 
     return results.rows.map(row => new Reservation(row));
   }
+
+  async save(){
+    console.log(this.startAt)
+    const results = await db.query(`
+      INSERT INTO reservations (customer_id, num_guests, start_at, notes)
+      VALUES ($1,$2,$3,$4)
+    `, [this.customerId, this.numGuests, this.startAt, this.notes])
+  }
+
+  get numGuests(){
+    return this._numGuests
+  }
+
+  set numGuests(val){
+    if(val < 1){
+      throw new Error('who is coming bro')
+    }
+    this._numGuests = val;
+  }
+
+  get startAt(){
+    return this._startAt
+  }
+
+  set startAt(val){
+    let res = new Date(val) 
+    if(res == 'Invalid Date'){
+      throw new Error('that is not a date or time');
+    }
+    this._startAt = res
+  }
 }
+
+
 
 
 module.exports = Reservation;

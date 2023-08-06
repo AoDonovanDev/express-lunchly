@@ -3,7 +3,7 @@
 const pg = require("pg");
 const secret = require("./secret")
 
-const db = new pg.Client("postgresql:///lunchly");
+const db = new pg.Client(secret);
 
 db.connect();
 

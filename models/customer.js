@@ -53,6 +53,20 @@ class Customer {
     return new Customer(customer);
   }
 
+  static async best(){
+    const results = await db.query(`
+      SELECT customers.id, customers.first_name as "firstName", customers.last_name as "lastName", customers.phone, customers.notes, COUNT(r.id)
+      FROM customers
+      LEFT JOIN reservations as r
+      ON customers.id = r.customer_id
+      GROUP BY customers.id
+      ORDER BY COUNT desc
+    `);
+    let top = results.rows.slice(0,10)
+    top.map(cx => new Customer(cx))
+    return top;
+}
+
   /** get all reservations for this customer. */
 
   async getReservations() {
@@ -77,6 +91,10 @@ class Customer {
         [this.firstName, this.lastName, this.phone, this.notes, this.id]
       );
     }
+  }
+
+  get fullName(){
+    return `${this.firstName} ${this.lastName}`
   }
 }
 

@@ -112,4 +112,27 @@ router.post("/:id/add-reservation/", async function(req, res, next) {
   }
 });
 
+router.get("/search/customers", async function(req, res, next) {
+  console.log(req.query)
+  const name = req.query.cxName
+  console.log(name)
+  try{
+    const all = await Customer.all()
+    const match = all.find(cx => cx.fullName() == name)
+    return res.redirect(`/${match.id}`)
+  } catch (e){
+    next(e)
+  }
+})
+
+router.get("/search/top", async function(req, res, next){
+  try{
+    const customers = await Customer.best()
+    console.log(customers)
+    return res.render("customer_list.html", { customers });
+  } catch (e){
+    next(e)
+  }
+})
+
 module.exports = router;
